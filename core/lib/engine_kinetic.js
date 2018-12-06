@@ -135,6 +135,7 @@ KineticEngine.prototype.step = function (requestSpec, ee) {
             if (receivedExpectedMessages.length !== expectedResponseMessages.length) {
               ee.emit('error', 'Expected response was not received', 1003);
             }
+            context.ws.removeEventListener('message', handleMessage);
             finishWsResponse(startedAt);
             callback(null, context);
           }, (requestSpec.send.think || 1) * 1000);
