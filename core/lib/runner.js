@@ -88,6 +88,9 @@ function runner(script, payload, options, callback) {
 
   let runnableScript = _.cloneDeep(script);
 
+  // Combine the default engines with any engines configured in the script
+  const allEngines = Object.assign({}, Engines, runnableScript.config.engines);
+
   // Flatten flows (can have nested arrays of request specs with YAML references):
   _.each(runnableScript.scenarios, function(scenarioSpec) {
     scenarioSpec.flow = _.flatten(scenarioSpec.flow);
@@ -99,11 +102,11 @@ function runner(script, payload, options, callback) {
   // load engines:
   //
   let runnerEngines = _.map(
-      Object.assign({}, Engines, runnableScript.config.engines),
+      allEngines,
       function loadEngine(engineConfig, engineName) {
         let moduleName = 'artillery-engine-' + engineName;
         try {
-          if (Engines[engineName]) {
+          if (allEngines[engineName]) {
             moduleName = './engine_' + engineName;
           }
           let Engine = require(moduleName);
