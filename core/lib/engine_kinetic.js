@@ -170,7 +170,7 @@ KineticEngine.prototype.compile = function (tasks, scenarioSpec, ee) {
 
       ee.emit('started');
 
-      let ws = new WebSocket(config.target, subprotocols, options);
+      let ws = new WebSocket(initialContext.vars.wsTarget || config.target, subprotocols, options);
 
       ws.on('open', function() {
         initialContext.ws = ws;
