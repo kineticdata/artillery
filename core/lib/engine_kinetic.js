@@ -87,13 +87,16 @@ KineticEngine.prototype.step = function (requestSpec, ee) {
         });
         if (matchedMessage) {
           // add the received message to the array of received expected messages
-          receivedExpectedMessages.push(expectedMessage);
+          receivedExpectedMessages.push(message);
         }
       });
       // clear the timeout if all expected resonses have been received
       if (receivedExpectedMessages.length === expectedResponseMessages.length) {
         if (responseTimeoutId) {
           clearTimeout(responseTimeoutId);
+        }
+        if (requestSpec.send.afterResponse) {
+          self.config.processor[requestSpec.send.afterResponse](receivedExpectedMessages);
         }
         context.ws.removeEventListener('message', handleMessage);
         finishWsResponse(startedAt);
